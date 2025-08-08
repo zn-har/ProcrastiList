@@ -36,6 +36,23 @@ def index_view(request):
 def logout_view(request):
     logout(request)
     return redirect('login')
+
+@login_required
+def toggle_todo_completion(request, todo_id):
+    if request.method == 'POST':
+        try:
+            todo = Todo.objects.get(id=todo_id, user=request.user)
+            todo.completed = not todo.completed
+            todo.save()
+            return JsonResponse({
+                'success': True, 
+                'completed': todo.completed,
+                'message': f'Todo {"completed" if todo.completed else "uncompleted"} successfully!'
+            })
+        except Todo.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Todo not found'})
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
 @csrf_protect
 def register_view(request):
     if request.method == 'POST':
