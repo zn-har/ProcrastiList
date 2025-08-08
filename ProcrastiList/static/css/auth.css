@@ -87,8 +87,17 @@ body {
 }
 
 .auth-section.active {
-    display: block;
+    display: block !important;
     animation: fadeIn 0.5s ease-out;
+}
+
+/* Debug styles - can be removed later */
+#registerSection {
+    border: 1px solid transparent;
+}
+
+#registerSection.active {
+    border-color: #10b981;
 }
 
 .auth-form {
@@ -116,7 +125,8 @@ body {
     z-index: 2;
 }
 
-.input-wrapper input {
+.input-wrapper input,
+.input-wrapper textarea {
     width: 100%;
     padding: 18px 18px 18px 50px;
     border: 2px solid #e1e5e9;
@@ -125,9 +135,11 @@ body {
     font-family: inherit;
     transition: all 0.3s ease;
     background: #f8f9fa;
+    resize: vertical;
 }
 
-.input-wrapper input:focus {
+.input-wrapper input:focus,
+.input-wrapper textarea:focus {
     outline: none;
     border-color: #667eea;
     background: white;

@@ -1,3 +1,78 @@
+// Initialize the auth app when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('DOM loaded, initializing auth...');
+    
+    // Check if we're on the login page
+    const loginSection = document.getElementById('loginSection');
+    const registerSection = document.getElementById('registerSection');
+    
+    if (!loginSection || !registerSection) {
+        console.error('Login or register sections not found');
+        return;
+    }
+    
+    console.log('Found login and register sections');
+    
+    // View switching function
+    function switchView(view) {
+        console.log('Switching to view:', view);
+        
+        const authSubtitle = document.querySelector('.auth-subtitle');
+
+        if (view === 'register') {
+            loginSection.classList.remove('active');
+            registerSection.classList.add('active');
+            if (authSubtitle) {
+                authSubtitle.textContent = 'Create your account to get started.';
+            }
+            console.log('Switched to register view');
+        } else {
+            registerSection.classList.remove('active');
+            loginSection.classList.add('active');
+            if (authSubtitle) {
+                authSubtitle.textContent = 'Welcome back! Please sign in to continue.';
+            }
+            console.log('Switched to login view');
+        }
+    }
+    
+    // Bind view switching events
+    const showRegisterLink = document.getElementById('showRegister');
+    const showLoginLink = document.getElementById('showLogin');
+    
+    console.log('showRegister element:', showRegisterLink);
+    console.log('showLogin element:', showLoginLink);
+    
+    if (showRegisterLink) {
+        showRegisterLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Register link clicked');
+            switchView('register');
+        });
+        console.log('Bound register link event');
+    } else {
+        console.error('showRegister link not found');
+    }
+
+    if (showLoginLink) {
+        showLoginLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            console.log('Login link clicked');
+            switchView('login');
+        });
+        console.log('Bound login link event');
+    } else {
+        console.error('showLogin link not found');
+    }
+    
+    // Initialize the full AuthApp
+    try {
+        new AuthApp();
+    } catch (error) {
+        console.error('Error initializing AuthApp:', error);
+    }
+});
+
 class AuthApp {
     constructor() {
         this.currentView = 'login';
@@ -10,6 +85,8 @@ class AuthApp {
     }
 
     bindEvents() {
+        console.log('Binding events...');
+        
         // Form submissions
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
@@ -22,15 +99,27 @@ class AuthApp {
         });
 
         // View switching
-        document.getElementById('showRegister').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.switchView('register');
-        });
+        const showRegisterLink = document.getElementById('showRegister');
+        const showLoginLink = document.getElementById('showLogin');
+        
+        console.log('showRegister element:', showRegisterLink);
+        console.log('showLogin element:', showLoginLink);
+        
+        if (showRegisterLink) {
+            showRegisterLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Register link clicked');
+                this.switchView('register');
+            });
+        }
 
-        document.getElementById('showLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            this.switchView('login');
-        });
+        if (showLoginLink) {
+            showLoginLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                console.log('Login link clicked');
+                this.switchView('login');
+            });
+        }
 
         // Password toggles
         document.getElementById('toggleLoginPassword').addEventListener('click', () => {
@@ -75,6 +164,8 @@ class AuthApp {
     }
 
     switchView(view) {
+        console.log('Switching to view:', view);
+        
         const loginSection = document.getElementById('loginSection');
         const registerSection = document.getElementById('registerSection');
         const authSubtitle = document.querySelector('.auth-subtitle');
@@ -84,11 +175,13 @@ class AuthApp {
             registerSection.classList.add('active');
             authSubtitle.textContent = 'Create your account to get started.';
             this.currentView = 'register';
+            console.log('Switched to register view');
         } else {
             registerSection.classList.remove('active');
             loginSection.classList.add('active');
             authSubtitle.textContent = 'Welcome back! Please sign in to continue.';
             this.currentView = 'login';
+            console.log('Switched to login view');
         }
     }
 
@@ -231,15 +324,12 @@ class AuthApp {
 
     async handleSocialLogin(provider) {
         this.showLoading();
-        this.showToast(`Redirecting to ${provider} login...`, 'info');
-
-        try {
-            // In a real app, this would redirect to OAuth provider
-            window.location.href = `/api/auth/${provider}`;
-        } catch (error) {
-            this.showToast(`${provider} login failed`, 'error');
+        this.showToast(`${provider} login not implemented yet`, 'info');
+        
+        // For now, just show a message that social login is not implemented
+        setTimeout(() => {
             this.hideLoading();
-        }
+        }, 2000);
     }
 
     validateEmail(email, inputId) {
@@ -319,26 +409,9 @@ class AuthApp {
     }
 
     async checkAuthStatus() {
-        const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-        
-        if (token) {
-            try {
-                const response = await fetch('/api/auth/verify', {
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                });
-
-                if (response.ok) {
-                    // User is already authenticated, redirect to app
-                    window.location.href = '/app';
-                }
-            } catch (error) {
-                // Token is invalid, remove it
-                localStorage.removeItem('authToken');
-                sessionStorage.removeItem('authToken');
-            }
-        }
+        // For now, we'll skip automatic auth checking since we're using Django sessions
+        // In a token-based system, you would check for valid tokens here
+        console.log('Auth status check skipped - using Django session authentication');
     }
 
     showToast(message, type = 'info') {
@@ -370,11 +443,6 @@ class AuthApp {
         });
     }
 }
-
-// Initialize the auth app when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
-    new AuthApp();
-});
 
 // Handle keyboard shortcuts
 document.addEventListener('keydown', (e) => {
