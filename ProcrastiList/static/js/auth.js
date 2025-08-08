@@ -129,10 +129,14 @@ class AuthApp {
         this.showLoading();
 
         try {
-            const response = await fetch('/api/auth/login', {
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const response = await fetch('/login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     email,
@@ -143,22 +147,15 @@ class AuthApp {
 
             const data = await response.json();
 
-            if (!response.ok) {
+            if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Login failed');
-            }
-
-            // Store auth token
-            if (rememberMe) {
-                localStorage.setItem('authToken', data.access_token);
-            } else {
-                sessionStorage.setItem('authToken', data.access_token);
             }
 
             this.showToast('Login successful! Redirecting...', 'success');
             
             // Redirect to main app
             setTimeout(() => {
-                window.location.href = '/app';
+                window.location.href = data.redirect_url || '/';
             }, 1500);
 
         } catch (error) {
@@ -191,39 +188,38 @@ class AuthApp {
             return;
         }
 
-        if (!this.isPasswordStrong(password)) {
-            this.showToast('Password must be at least 8 characters with uppercase, lowercase, and number', 'error');
-            return;
-        }
-
         this.showLoading();
 
         try {
-            const response = await fetch('/api/auth/register', {
+            // Get CSRF token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            const response = await fetch('/register/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'X-CSRFToken': csrfToken,
                 },
                 body: JSON.stringify({
                     name,
                     email,
-                    password
+                    password,
+                    confirm_password: confirmPassword
                 }),
             });
 
             const data = await response.json();
 
-            if (!response.ok) {
+            if (!response.ok || !data.success) {
                 throw new Error(data.message || 'Registration failed');
             }
 
-            this.showToast('Registration successful! Please sign in.', 'success');
+            this.showToast('Registration successful! Redirecting...', 'success');
             
-            // Switch to login view
+            // Redirect to main app
             setTimeout(() => {
-                this.switchView('login');
-                document.getElementById('loginEmail').value = email;
-            }, 2000);
+                window.location.href = data.redirect_url || '/';
+            }, 1500);
 
         } catch (error) {
             this.showToast(error.message || 'Registration failed', 'error');
