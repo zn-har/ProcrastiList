@@ -1,6 +1,9 @@
 venv
 **/migrations/0*
 **/pycache__*
+**/pycache__/*
+**/__pycache__/
+
 pyrightconfig.json
 media/
 
