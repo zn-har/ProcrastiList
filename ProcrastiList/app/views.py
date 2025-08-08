@@ -26,6 +26,8 @@ def index_view(request):
         distractions = get_distractions(task)
         for distraction in distractions:
             Todo.objects.create(user=request.user, priority="HIGH", task=distraction)
+
+        return redirect('index')
     try:
         todos = Todo.objects.filter(user=request.user)
     except:
@@ -52,6 +54,16 @@ def toggle_todo_completion(request, todo_id):
         except Todo.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'Todo not found'})
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+def remove_todo(request, todo_id):
+    if request.method == 'POST':
+        try:
+            todo = Todo.objects.get(id=todo_id, user=request.user)
+            todo.delete()
+            pass
+        except Todo.DoesNotExist:
+            pass
+    return redirect('index')
 
 @csrf_protect
 def register_view(request):
