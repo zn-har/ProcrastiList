@@ -3,7 +3,7 @@ venv
 **/pycache__*
 **/pycache__/*
 **/__pycache__/
-
+migrations/
 pyrightconfig.json
 media/
 
