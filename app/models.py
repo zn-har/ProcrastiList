@@ -13,6 +13,7 @@ class Todo(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='todos')
     task = models.CharField(max_length=100)
     completed = models.BooleanField(default=False)
+    deadline = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="LOW")
 
     def __str__(self):

@@ -218,8 +218,9 @@ body {
 .note-controls {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-end;
     gap: 15px;
+    flex-wrap: wrap;
 }
 
 .priority-select {
@@ -1263,5 +1264,99 @@ body {
     .toast {
         min-width: auto;
         width: calc(100vw - 40px);
+    }
+}
+
+/* Deadline Input Styles */
+.deadline-input-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+}
+
+.deadline-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.deadline-input {
+    border: none;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    outline: none;
+    color: var(--text-primary);
+    font-family: inherit;
+}
+
+.deadline-input:focus {
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Deadline Display in Notes */
+.note-deadline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 4px 8px;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    color: #4338ca;
+    border-left: 3px solid #6366f1;
+}
+
+.note-deadline.overdue {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+    border-left-color: #ef4444;
+}
+
+.note-deadline i {
+    font-size: 0.75rem;
+}
+
+.deadline-date {
+    font-weight: 500;
+}
+
+.overdue-label {
+    background: #ef4444;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    margin-left: auto;
+}
+
+/* Responsive adjustments for deadline */
+@media (max-width: 768px) {
+    .deadline-input-wrapper {
+        align-items: center;
+        text-align: center;
+    }
+    
+    .deadline-label {
+        font-size: 0.8rem;
+    }
+    
+    .deadline-input {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+    }
+    
+    .note-deadline {
+        font-size: 0.75rem;
+        padding: 3px 6px;
     }
 }

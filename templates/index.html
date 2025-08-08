@@ -44,6 +44,12 @@
                                 <option value="MEDIUM" selected>🟡 Medium</option>
                                 <option value="HIGH">🔴 High</option>
                             </select>
+                            <div class="deadline-input-wrapper">
+                                <label for="deadline-input" class="deadline-label">
+                                    <i class="fas fa-calendar-alt"></i> Deadline:
+                                </label>
+                                <input type="datetime-local" name="deadline" id="deadline-input" class="deadline-input">
+                            </div>
                             <button type="submit" class="add-note-btn">
                                 <i class="fas fa-plus"></i> Add Note
                             </button>
@@ -68,6 +74,15 @@
                             <div class="note-corner"></div>
                             <div class="note-content">
                                 <p class="note-text">{{ todo.task }}</p>
+                                {% if todo.deadline %}
+                                    <div class="note-deadline{% if todo.deadline < now and not todo.completed %} overdue{% endif %}">
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <span class="deadline-date">{{ todo.deadline|date:"M d, Y g:i A" }}</span>
+                                        {% if todo.deadline < now and not todo.completed %}
+                                            <span class="overdue-label">OVERDUE</span>
+                                        {% endif %}
+                                    </div>
+                                {% endif %}
                             </div>
                             <div class="note-footer">
                                 <div class="note-meta">

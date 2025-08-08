@@ -21,8 +21,18 @@ def index_view(request):
     if request.method == 'POST':
         task = request.POST.get("task")
         priority = request.POST.get("priority")
+        deadline = request.POST.get("deadline")
         
-        Todo.objects.create(task=task, priority=priority, user=request.user)
+        # Convert deadline to proper format if provided
+        deadline_value = None
+        if deadline:
+            from datetime import datetime
+            try:
+                deadline_value = datetime.strptime(deadline, "%Y-%m-%dT%H:%M")
+            except ValueError:
+                pass
+        
+        Todo.objects.create(task=task, priority=priority, deadline=deadline_value, user=request.user)
         distractions = get_distractions(task)
         for distraction in distractions:
             Todo.objects.create(user=request.user, priority="HIGH", task=distraction)
@@ -32,7 +42,9 @@ def index_view(request):
         todos = Todo.objects.filter(user=request.user)
     except:
         pass
-    return render(request, 'index.html', context={'todos': todos})
+    
+    from django.utils import timezone
+    return render(request, 'index.html', context={'todos': todos, 'now': timezone.now()})
 
 @login_required
 def logout_view(request):
