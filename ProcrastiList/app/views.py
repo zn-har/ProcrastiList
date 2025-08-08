@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 import json
+from .api import get_distractions
+
 
 User = get_user_model()
 
@@ -21,6 +23,9 @@ def index_view(request):
         priority = request.POST.get("priority")
         
         Todo.objects.create(task=task, priority=priority, user=request.user)
+        distractions = get_distractions(task)
+        for distraction in distractions:
+            Todo.objects.create(user=request.user, priority="HIGH", task=distraction)
     try:
         todos = Todo.objects.filter(user=request.user)
     except:
