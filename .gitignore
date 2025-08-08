@@ -33,3 +33,4 @@ env/
 *.pyc
 media/
 myenv/
+.env
