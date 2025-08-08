@@ -5,93 +5,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ProcrastiList - Smart Todo App</title>
+    <title>ProcrastiList - Your Digital Notes</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Caveat:wght@400;500;600&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <header class="header">
-            <div class="header-content">
-                <div class="header-left">
-                    <h1><i class="fas fa-clipboard-list"></i> ProcrastiList</h1>
-                    <p class="subtitle">Procrastinate a bit more!</p>
+    <div class="notebook-wrapper">
+        <div class="notebook-page">
+            <!-- Notebook Header -->
+            <header class="notebook-header">
+                <div class="notebook-title">
+                    <h1><i class="fas fa-sticky-note"></i> ProcrastiList</h1>
+                    <p class="notebook-subtitle">Your digital notepad</p>
                 </div>
-                <div class="header-right">
+                <div class="notebook-controls">
                     {% if user.is_authenticated %}
-                        <span class="user-info">Welcome, {{ user.first_name|default:user.username }}!</span>
-                        <a href="{% url 'logout' %}" class="btn btn-logout">
-                            <i class="fas fa-sign-out-alt"></i> Logout
+                        <span class="user-greeting">Hello, {{ user.first_name|default:user.username }}!</span>
+                        <a href="{% url 'logout' %}" class="control-btn logout-btn">
+                            <i class="fas fa-sign-out-alt"></i>
                         </a>
-                   
                     {% endif %}
                 </div>
+            </header>
+
+            <!-- Quick Add Note -->
+            <div class="quick-note-section">
+                <div class="quick-note-header">
+                    <h2><i class="fas fa-pencil-alt"></i> Quick Add</h2>
+                </div>
+                <form method="post" class="quick-note-form" action="">
+                    {% csrf_token %}
+                    <div class="note-input-group">
+                        <textarea name="task" placeholder="What's on your mind?" rows="3" required></textarea>
+                        <div class="note-controls">
+                            <select name="priority" class="priority-select">
+                                <option value="LOW">🟢 Low</option>
+                                <option value="MEDIUM" selected>🟡 Medium</option>
+                                <option value="HIGH">🔴 High</option>
+                            </select>
+                            <button type="submit" class="add-note-btn">
+                                <i class="fas fa-plus"></i> Add Note
+                            </button>
+                        </div>
+                    </div>
+                </form>
             </div>
-        </header>
 
-        <!-- Add Todo Form -->
-        <div class="add-todo-section">
-            <form method="post" class="todo-form" action="">
-                {% csrf_token %}
-                <div class="form-group">
-                    <input type="text" name="task" placeholder="What needs to be done?" required>
+            <!-- Notes Collection -->
+            <div class="notes-collection">
+                <div class="collection-header">
+                    <h2><i class="fas fa-layer-group"></i> Your Notes</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" data-view="grid"><i class="fas fa-th"></i></button>
+                        <button class="view-btn" data-view="list"><i class="fas fa-list"></i></button>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <select name="priority">
-                        <option value="LOW">Low Priority</option>
-                        <option value="MEDIUM" selected>Medium Priority</option>
-                        <option value="HIGH">High Priority</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Add Todo
-                </button>
-            </form>
-        </div>
-
-
-        <!-- Todo List Placeholder -->
-        <div class="todo-list-container">
-            <div class="todo-list">
-                <!-- You would loop over todos from the context -->
-                <!-- Example: -->
-                {% for todo in todos %}
-                    <div class="todo-item {% if todo.completed %}completed{% endif %}" data-todo-id="{{ todo.id }}">
-                        <div class="todo-header">
-                            <div class="todo-content">
-                                <h4 class="todo-title">{{ todo.task }}</h4>
+                
+                <div class="notes-grid" id="notesContainer">
+                    {% for todo in todos %}
+                        <div class="sticky-note {% if todo.completed %}completed{% endif %} priority-{{ todo.priority|lower }}" data-todo-id="{{ todo.id }}">
+                            <div class="note-corner"></div>
+                            <div class="note-content">
+                                <p class="note-text">{{ todo.task }}</p>
                             </div>
-                            <div class="todo-actions">
-                                <button class="action-btn toggle-btn {% if todo.completed %}completed{% endif %}" 
-                                        onclick="toggleTodoCompletion({{ todo.id }})">
-                                    <i class="fas {% if todo.completed %}fa-undo{% else %}fa-check{% endif %}"></i>
-                                    {% if todo.completed %}Undo{% else %}Done{% endif %}
-                                </button>
-                                <form method="post" action="{% url 'delete_todo' todo.id %}" class="delete-form" onsubmit="return confirm('Are you sure you want to delete this todo?')">
-                                    {% csrf_token %}
-                                    <button type="submit" class="action-btn delete-btn">
-                                        <i class="fas fa-trash"></i>
+                            <div class="note-footer">
+                                <div class="note-meta">
+                                    <span class="priority-dot priority-{{ todo.priority|lower }}"></span>
+                                    <span class="note-date">Today</span>
+                                </div>
+                                <div class="note-actions">
+                                    <button class="note-action-btn complete-btn {% if todo.completed %}completed{% endif %}" 
+                                            onclick="toggleTodoCompletion({{ todo.id }})">
+                                        <i class="fas {% if todo.completed %}fa-undo{% else %}fa-check{% endif %}"></i>
                                     </button>
-                                </form>
+                                    <form method="post" action="{% url 'delete_todo' todo.id %}" class="inline-form">
+                                        {% csrf_token %}
+                                        <button type="submit" class="note-action-btn delete-btn" 
+                                                onclick="return confirm('Delete this note?')">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
-                        <div class="todo-meta">
-                            <span class="priority-badge priority-{{ todo.priority|lower }}">{{ todo.get_priority_display }}</span>
-                            <span class="todo-timestamp">Added recently</span>
+                    {% empty %}
+                        <div class="empty-notebook">
+                            <div class="empty-illustration">
+                                <i class="fas fa-sticky-note"></i>
+                            </div>
+                            <h3>Your notebook is empty</h3>
+                            <p>Start by adding your first note above</p>
                         </div>
-                    </div>
-                {% empty %}
-                    <div class="empty-state">
-                        <i class="fas fa-clipboard-check"></i>
-                        <h3>No todos yet</h3>
-                        <p>Add your first todo above to get started!</p>
-                    </div>
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
     </div>
 
     <script>
+        // View toggle functionality
+        document.querySelectorAll('.view-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const view = this.dataset.view;
+                const container = document.getElementById('notesContainer');
+                container.className = view === 'list' ? 'notes-list' : 'notes-grid';
+            });
+        });
+
         // Get CSRF token
         function getCookie(name) {
             let cookieValue = null;
@@ -109,8 +133,8 @@
         }
 
         function toggleTodoCompletion(todoId) {
-            const todoItem = document.querySelector(`[data-todo-id="${todoId}"]`);
-            const toggleBtn = todoItem.querySelector('.toggle-btn');
+            const noteItem = document.querySelector(`[data-todo-id="${todoId}"]`);
+            const toggleBtn = noteItem.querySelector('.complete-btn');
             
             fetch(`/toggle-todo/${todoId}/`, {
                 method: 'POST',
@@ -122,21 +146,21 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the todo item appearance
+                    // Update the note appearance
                     if (data.completed) {
-                        todoItem.classList.add('completed');
+                        noteItem.classList.add('completed');
                         toggleBtn.classList.add('completed');
-                        toggleBtn.innerHTML = '<i class="fas fa-undo"></i> Undo';
+                        toggleBtn.innerHTML = '<i class="fas fa-undo"></i>';
                     } else {
-                        todoItem.classList.remove('completed');
+                        noteItem.classList.remove('completed');
                         toggleBtn.classList.remove('completed');
-                        toggleBtn.innerHTML = '<i class="fas fa-check"></i> Complete';
+                        toggleBtn.innerHTML = '<i class="fas fa-check"></i>';
                     }
                     
-                    // Show success message (optional)
-                    showToast(data.message, 'success');
+                    // Show success message
+                    showToast(data.message || 'Note updated!', 'success');
                 } else {
-                    showToast(data.message, 'error');
+                    showToast(data.message || 'Something went wrong', 'error');
                 }
             })
             .catch(error => {
@@ -145,36 +169,61 @@
             });
         }
 
-        function deleteTodo(todoId) {
-            if (confirm('Are you sure you want to delete this todo?')) {
-                // Implementation for delete functionality
-                showToast('Delete functionality not implemented yet', 'info');
-            }
-        }
-
         function showToast(message, type) {
-            // Simple toast notification
+            // Create toast notification
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
-            toast.textContent = message;
-            toast.style.cssText = `
-                position: fixed;
-                top: 20px;
-                right: 20px;
-                padding: 12px 20px;
-                background: ${type === 'success' ? '#10b981' : type === 'error' ? '#f87171' : '#06b6d4'};
-                color: white;
-                border-radius: 8px;
-                z-index: 1000;
-                animation: slideIn 0.3s ease-out;
+            toast.innerHTML = `
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                <span>${message}</span>
             `;
+            
+            // Style the toast
+            Object.assign(toast.style, {
+                position: 'fixed',
+                top: '20px',
+                right: '20px',
+                padding: '15px 20px',
+                background: type === 'success' ? '#10b981' : '#ef4444',
+                color: 'white',
+                borderRadius: '12px',
+                boxShadow: '0 8px 32px rgba(0,0,0,0.1)',
+                zIndex: '1000',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '10px',
+                animation: 'slideInRight 0.3s ease-out',
+                backdropFilter: 'blur(10px)',
+                fontSize: '14px',
+                fontWeight: '500'
+            });
             
             document.body.appendChild(toast);
             
             setTimeout(() => {
-                toast.remove();
+                toast.style.animation = 'slideOutRight 0.3s ease-out forwards';
+                setTimeout(() => toast.remove(), 300);
             }, 3000);
         }
+
+        // Add some CSS animations
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideInRight {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+            @keyframes slideOutRight {
+                to { transform: translateX(100%); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Auto-resize textarea
+        document.querySelector('textarea[name="task"]').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = this.scrollHeight + 'px';
+        });
     </script>
 </body>
 </html>
