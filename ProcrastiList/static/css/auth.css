@@ -96,9 +96,9 @@ body {
     border: 1px solid transparent;
 }
 
-#registerSection.active {
+/* #registerSection.active {
     border-color: #10b981;
-}
+} */
 
 .auth-form {
     display: flex;
