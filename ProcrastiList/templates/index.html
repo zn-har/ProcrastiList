@@ -1,10 +1,11 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ProcrastiList - Smart Todo App</title>
-    {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -33,22 +34,16 @@
 
         <!-- Add Todo Form -->
         <div class="add-todo-section">
-            <form id="todoForm" class="todo-form">
+            <form method="post" class="todo-form" action="">
+                {% csrf_token %}
                 <div class="form-group">
-                    <input type="text" id="todoTitle" placeholder="What needs to be done?" required>
+                    <input type="text" name="task" placeholder="What needs to be done?" required>
                 </div>
                 <div class="form-group">
-                    <textarea id="todoDescription" placeholder="Add a description (optional)"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="todoDeadline" class="form-label">Deadline </label>
-                    <input type="date" id="todoDeadline" required>
-                </div>
-                <div class="form-group">
-                    <select id="todoPriority">
-                        <option value="low">Low Priority</option>
-                        <option value="medium" selected>Medium Priority</option>
-                        <option value="high">High Priority</option>
+                    <select name="priority">
+                        <option value="LOW">Low Priority</option>
+                        <option value="MEDIUM" selected>Medium Priority</option>
+                        <option value="HIGH">High Priority</option>
                     </select>
                 </div>
                 <button type="submit" class="btn btn-primary">
@@ -57,77 +52,27 @@
             </form>
         </div>
 
-        <!-- Filter Tabs -->
-        <div class="filter-tabs">
-            <button class="filter-tab active" data-filter="all">
-                <i class="fas fa-list"></i> All (<span id="allCount">0</span>)
-            </button>
-            <button class="filter-tab" data-filter="pending">
-                <i class="fas fa-clock"></i> Pending (<span id="pendingCount">0</span>)
-            </button>
-            <button class="filter-tab" data-filter="completed">
-                <i class="fas fa-check"></i> Completed (<span id="completedCount">0</span>)
-            </button>
-        </div>
 
-        <!-- Todo List -->
+        <!-- Todo List Placeholder -->
         <div class="todo-list-container">
-            <div id="todoList" class="todo-list">
-                <!-- Todos will be dynamically inserted here -->
+            <div class="todo-list">
+                <!-- You would loop over todos from the context -->
+                <!-- Example: -->
+                {% for todo in todos %}
+                    <div class="todo-item">
+                        <h4>{{ todo.title }}</h4>
+                        <p>{{ todo.task }}</p>
+                        <span class="priority {{ todo.priority }}">{{ todo.priority }}</span>
+                    </div>
+                {% empty %}
+                    <div class="empty-state">
+                        <i class="fas fa-clipboard-check"></i>
+                        <h3>No todos yet</h3>
+                        <p>Add your first todo above to get started!</p>
+                    </div>
+                {% endfor %}
             </div>
-            <div id="emptyState" class="empty-state">
-                <i class="fas fa-clipboard-check"></i>
-                <h3>No todos yet</h3>
-                <p>Add your first todo above to get started!</p>
-            </div>
-        </div>
-
-        <!-- Loading Spinner -->
-        <div id="loading" class="loading">
-            <div class="spinner"></div>
-            <p>Loading todos...</p>
-        </div>
-    </div>
-
-    <!-- Edit Modal -->
-    <div id="editModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3><i class="fas fa-edit"></i> Edit Todo</h3>
-                <button class="close-btn" id="closeModal">&times;</button>
-            </div>
-            <form id="editForm">
-                <div class="form-group">
-                    <label for="editTitle">Title</label>
-                    <input type="text" id="editTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="editDescription">Description</label>
-                    <textarea id="editDescription"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="editDeadline">Deadline</label>
-                    <input type="datetime-local" id="editDeadline">
-                </div>
-                <div class="form-group">
-                    <label for="editPriority">Priority</label>
-                    <select id="editPriority">
-                        <option value="low">Low Priority</option>
-                        <option value="medium">Medium Priority</option>
-                        <option value="high">High Priority</option>
-                    </select>
-                </div>
-                <div class="modal-actions">
-                    <button type="button" class="btn btn-secondary" id="cancelEdit">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                </div>
-            </form>
         </div>
     </div>
-
-    <!-- Toast Notifications -->
-    <div id="toastContainer" class="toast-container"></div>
-
-    <script src="{% static 'js/script.js' %}"></script>
 </body>
 </html>

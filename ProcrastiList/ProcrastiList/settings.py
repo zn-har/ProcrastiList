@@ -121,6 +121,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static',
 ]
 
+# If you're storing static files in a custom folder like 'static/' in your project ro
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
