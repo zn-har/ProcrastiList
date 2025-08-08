@@ -21,5 +21,6 @@ from app.views import index_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', index_view)# Include the app's URLs
+    path('', index_view),
+    path('app/', include('app.urls'))  # Include the app's URLs
 ]
