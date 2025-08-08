@@ -2,20 +2,6 @@ from django.shortcuts import render
 from .models import Todo
 from django.contrib.auth import get_user_model
 
-User = get_user_model()
-
-def index_view(request):
-    todos = []
-    if request.method == 'POST':
-        print(request.POST)
-    else:
-        user = User.objects.get(username="answar")
-        try:
-            todos = Todo.objects.get(user=user)
-        except:
-            pass
-    return render(request, 'index.html', context={'todos': todos})
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
@@ -25,10 +11,26 @@ from django.views.decorators.csrf import csrf_protect
 from django.http import JsonResponse
 import json
 
-@login_required
-def index(request):
-    return render(request, 'index.html')
+User = get_user_model()
 
+@login_required
+def index_view(request):
+    todos = list()
+    if request.method == 'POST':
+        task = request.POST.get("task")
+        priority = request.POST.get("priority")
+        
+        Todo.objects.create(task=task, priority=priority, user=request.user)
+    try:
+        todos = Todo.objects.filter(user=request.user)
+    except:
+        pass
+    return render(request, 'index.html', context={'todos': todos})
+
+@login_required
+def logout_view(request):
+    logout(request)
+    return redirect('login')
 @csrf_protect
 def login_view(request):
     if request.method == 'POST':
@@ -163,5 +165,3 @@ def register_view(request):
                 messages.error(request, error_message)
     
     return render(request, 'login.html')
-
-# Create your views here.
