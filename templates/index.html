@@ -48,7 +48,7 @@
                                 <label for="deadline-input" class="deadline-label">
                                     <i class="fas fa-calendar-alt"></i> Deadline:
                                 </label>
-                                <input type="datetime-local" name="deadline" id="deadline-input" class="deadline-input">
+                                <input type="datetime-local" name="deadline" id="deadline-input" class="deadline-input" required>
                             </div>
                             <button type="submit" class="add-note-btn">
                                 <i class="fas fa-plus"></i> Add Note
@@ -70,19 +70,31 @@
                 
                 <div class="notes-grid" id="notesContainer">
                     {% for todo in todos %}
-                        <div class="sticky-note {% if todo.completed %}completed{% endif %} priority-{{ todo.priority|lower }}" data-todo-id="{{ todo.id }}">
-                            <div class="note-corner"></div>
+                    <div class="sticky-note {% if todo.completed %}completed{% endif %} priority-{{ todo.priority|lower }}" data-todo-id="{{ todo.id }}">
+                        <div class="note-corner"></div>
+                            {% if todo.deadline %}
+                                <div class="note-deadline{% if todo.deadline < now and not todo.completed %} overdue{% endif %}">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span class="deadline-date">{{ todo.deadline|date:"M d, Y g:i A" }}</span>
+                                    {% if todo.deadline < now and not todo.completed %}
+                                        <span class="overdue-label">OVERDUE</span>
+                                    {% endif %}
+                                </div>
+                            {% endif %}
                             <div class="note-content">
                                 <p class="note-text">{{ todo.task }}</p>
-                                {% if todo.deadline %}
-                                    <div class="note-deadline{% if todo.deadline < now and not todo.completed %} overdue{% endif %}">
-                                        <i class="fas fa-calendar-alt"></i>
-                                        <span class="deadline-date">{{ todo.deadline|date:"M d, Y g:i A" }}</span>
-                                        {% if todo.deadline < now and not todo.completed %}
-                                            <span class="overdue-label">OVERDUE</span>
+
+                                {% if todo.d1 or todo.d2 %}
+                                    <div class="note-distractions">
+                                        {% if todo.d1 %}
+                                            <p class="distraction-item"><strong>.</strong> {{ todo.d1 }}</p>
+                                        {% endif %}
+                                        {% if todo.d2 %}
+                                            <p class="distraction-item"><strong>.</strong> {{ todo.d2 }}</p>
                                         {% endif %}
                                     </div>
                                 {% endif %}
+
                             </div>
                             <div class="note-footer">
                                 <div class="note-meta">
@@ -161,7 +173,6 @@
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Update the note appearance
                     if (data.completed) {
                         noteItem.classList.add('completed');
                         toggleBtn.classList.add('completed');
@@ -171,8 +182,6 @@
                         toggleBtn.classList.remove('completed');
                         toggleBtn.innerHTML = '<i class="fas fa-check"></i>';
                     }
-                    
-                    // Show success message
                     showToast(data.message || 'Note updated!', 'success');
                 } else {
                     showToast(data.message || 'Something went wrong', 'error');
@@ -185,7 +194,6 @@
         }
 
         function showToast(message, type) {
-            // Create toast notification
             const toast = document.createElement('div');
             toast.className = `toast ${type}`;
             toast.innerHTML = `
@@ -193,7 +201,6 @@
                 <span>${message}</span>
             `;
             
-            // Style the toast
             Object.assign(toast.style, {
                 position: 'fixed',
                 top: '20px',
@@ -221,7 +228,6 @@
             }, 3000);
         }
 
-        // Add some CSS animations
         const style = document.createElement('style');
         style.textContent = `
             @keyframes slideInRight {
@@ -234,11 +240,27 @@
         `;
         document.head.appendChild(style);
 
-        // Auto-resize textarea
         document.querySelector('textarea[name="task"]').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = this.scrollHeight + 'px';
         });
     </script>
+
+    <style>
+        .note-distractions {
+            margin-top: 10px;
+            padding: 8px;
+            background-color: #fff7cc;
+            border-left: 4px solid #facc15;
+            font-size: 14px;
+            line-height: 1.4;
+            border-radius: 4px;
+        }
+
+        .distraction-item {
+            margin: 0;
+            color: #6b4c00;
+        }
+    </style>
 </body>
 </html>

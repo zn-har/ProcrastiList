@@ -32,10 +32,8 @@ def index_view(request):
             except ValueError:
                 pass
         
-        Todo.objects.create(task=task, priority=priority, deadline=deadline_value, user=request.user)
         distractions = get_distractions(task)
-        for distraction in distractions:
-            Todo.objects.create(user=request.user, priority="HIGH", task=distraction)
+        Todo.objects.create(task=task, priority=priority, deadline=deadline_value, user=request.user, d1=distractions[0], d2=distractions[1])
 
         return redirect('index')
     try:

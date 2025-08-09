@@ -11,7 +11,7 @@ def get_distractions(task):
     client = genai.Client(api_key=os.getenv('API_KEY'))
 
     response = client.models.generate_content(
-        model="gemini-2.5-flash", contents=f"Gimme {random.randint(1, 5)} distracting activities for distracting from this task  '{task}'", config=types.GenerateContentConfig(system_instruction=ins)
+        model="gemini-2.5-flash", contents=f"Gimme 2 distracting activities for distracting from this task  '{task}'", config=types.GenerateContentConfig(system_instruction=ins)
     )
     print(response.text)
     return eval(response.text)

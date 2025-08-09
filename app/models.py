@@ -15,6 +15,8 @@ class Todo(models.Model):
     completed = models.BooleanField(default=False)
     deadline = models.DateTimeField(null=True, blank=True)
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default="LOW")
+    d1 = models.CharField(max_length=100)
+    d2 = models.CharField(max_length=100)
 
     def __str__(self):
         return f"{self.task} ({self.get_priority_display()})"
