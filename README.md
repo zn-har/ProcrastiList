@@ -31,9 +31,9 @@ For Software:
 ### Implementation
 For Software:
 # Installation
-RUN `pip install -r requirements.txt`
-RUN `./manage.py makemigration`
-RUN `./manage.py  migrate`
+RUN `pip install -r requirements.txt`<br>
+RUN `./manage.py makemigration`<br>
+RUN `./manage.py  migrate`<br>
 
 
 # Run
@@ -43,51 +43,25 @@ RUN `./manage.py runserver`
 For Software:
 
 # Screenshots (Add at least 3)
-![Screenshot1]
+![Screenshot1](Add screenshot 1 here with proper name)
 <img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/1.png">
-(Add screenshot 1 here with proper name)
-*Add caption explaining what this shows*
+
+*user registration page*
 
 ![Screenshot2](Add screenshot 2 here with proper name)
 <img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/2.png">
 
-*Add caption explaining what this shows*
+*user Login  page*
 
 ![Screenshot3](Add screenshot 3 here with proper name)
 
 <img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/3.png">
-*Add caption explaining what this shows*
+*Landing Page where all the tasks are given*
 
 # Diagrams
 ![Workflow](Add your workflow/architecture diagram here)
 *Add caption explaining your workflow*
 
-For Hardware:
-
-# Schematic & Circuit
-![Circuit](Add your circuit diagram here)
-*Add caption explaining connections*
-
-![Schematic](Add your schematic diagram here)
-*Add caption explaining the schematic*
-
-# Build Photos
-![Components](Add photo of your components here)
-*List out all components shown*
-
-![Build](Add photos of build process here)
-*Explain the build steps*
-
-![Final](Add photo of final product here)
-*Explain the final build*
-
-### Project Demo
-# Video
-[Add your demo video link here]
-*Explain what the video demonstrates*
-
-# Additional Demos
-[Add any extra demo materials/links]
 
 ## Team Contributions
 - [Name 1]: [Specific contributions]
@@ -99,6 +73,7 @@ Made with ❤️ at TinkerHub Useless Projects
 
 ![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
 ![Static Badge](https://img.shields.io/badge/UselessProjects--25-25?link=https%3A%2F%2Fwww.tinkerhub.org%2Fevents%2FQ2Q1TQKX6Q%2FUseless%2520Projects)
+
 
 
 
