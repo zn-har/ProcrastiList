@@ -13,7 +13,7 @@
 - Member 2: Muhammed Answar CK - Cusat,SOE
 
 ### Project Description
-our project helps people who love to procrastinate by messing up with their daily Tasks
+our project helps people who love to procrastinate by messing up with their daily Tasks and suggesting them to watch new movies or series 
 
 ### The Problem (that doesn't exist)
 The people who loves to Procastinate fear of deadlines 
@@ -72,6 +72,7 @@ Made with ❤️ at TinkerHub Useless Projects
 
 ![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
 ![Static Badge](https://img.shields.io/badge/UselessProjects--25-25?link=https%3A%2F%2Fwww.tinkerhub.org%2Fevents%2FQ2Q1TQKX6Q%2FUseless%2520Projects)
+
 
 
 
