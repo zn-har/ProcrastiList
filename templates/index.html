@@ -73,9 +73,10 @@
                     <div class="sticky-note {% if todo.completed %}completed{% endif %} priority-{{ todo.priority|lower }}" data-todo-id="{{ todo.id }}">
                         <div class="note-corner"></div>
                             {% if todo.deadline %}
-                                <div class="note-deadline{% if todo.deadline < now and not todo.completed %} overdue{% endif %}">
+                                <div class="note-deadline{% if todo.deadline < now and not todo.completed %} overdue{% endif %}" data-deadline="{{ todo.deadline|date:'c' }}">
                                     <i class="fas fa-calendar-alt"></i>
                                     <span class="deadline-date">{{ todo.deadline|date:"M d, Y g:i A" }}</span>
+                                    <span class="time-remaining"></span>
                                     {% if todo.deadline < now and not todo.completed %}
                                         <span class="overdue-label">OVERDUE</span>
                                     {% endif %}
@@ -131,6 +132,55 @@
     </div>
 
     <script>
+        // Function to calculate time remaining
+        function calculateTimeRemaining(deadline) {
+            const now = new Date();
+            const deadlineDate = new Date(deadline);
+            const timeDiff = deadlineDate - now;
+            
+            if (timeDiff <= 0) {
+                return null; // Overdue or passed
+            }
+            
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            
+            if (days > 0) {
+                return `${days} day${days > 1 ? 's' : ''} left`;
+            } else if (hours > 0) {
+                return `${hours} hour${hours > 1 ? 's' : ''} left`;
+            } else if (minutes > 0) {
+                return `${minutes} minute${minutes > 1 ? 's' : ''} left`;
+            } else {
+                return "Less than a minute left";
+            }
+        }
+        
+        // Update time remaining for all deadlines
+        function updateTimeRemaining() {
+            document.querySelectorAll('.note-deadline[data-deadline]').forEach(deadlineEl => {
+                const deadline = deadlineEl.getAttribute('data-deadline');
+                const timeRemainingEl = deadlineEl.querySelector('.time-remaining');
+                const timeRemaining = calculateTimeRemaining(deadline);
+                
+                if (timeRemaining && !deadlineEl.classList.contains('overdue')) {
+                    timeRemainingEl.textContent = ` (${timeRemaining})`;
+                    timeRemainingEl.style.color = '#059669';
+                    timeRemainingEl.style.fontWeight = '500';
+                    timeRemainingEl.style.fontSize = '12px';
+                } else {
+                    timeRemainingEl.textContent = '';
+                }
+            });
+        }
+        
+        // Update time remaining on page load and every minute
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTimeRemaining();
+            setInterval(updateTimeRemaining, 60000); // Update every minute
+        });
+
         // View toggle functionality
         document.querySelectorAll('.view-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -260,6 +310,22 @@
         .distraction-item {
             margin: 0;
             color: #6b4c00;
+        }
+        
+        .time-remaining {
+            display: inline-block;
+            color: #059669 !important;
+            font-weight: 500;
+            font-size: 12px;
+            margin-left: 5px;
+            padding: 2px 6px;
+            background-color: rgba(5, 150, 105, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(5, 150, 105, 0.2);
+        }
+        
+        .note-deadline.overdue .time-remaining {
+            display: none;
         }
     </style>
 </body>
