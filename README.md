@@ -44,18 +44,18 @@ For Software:
 
 # Screenshots (Add at least 3)
 ![Screenshot1]
-https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/1.png
+<img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/1.png">
 (Add screenshot 1 here with proper name)
 *Add caption explaining what this shows*
 
 ![Screenshot2](Add screenshot 2 here with proper name)
-https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/2.png
+<img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/2.png">
 
 *Add caption explaining what this shows*
 
 ![Screenshot3](Add screenshot 3 here with proper name)
 
-https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/3.png
+<img src="https://raw.githubusercontent.com/zn-har/ProcrastiList/refs/heads/main/images/3.png">
 *Add caption explaining what this shows*
 
 # Diagrams
@@ -99,6 +99,7 @@ Made with ❤️ at TinkerHub Useless Projects
 
 ![Static Badge](https://img.shields.io/badge/TinkerHub-24?color=%23000000&link=https%3A%2F%2Fwww.tinkerhub.org%2F)
 ![Static Badge](https://img.shields.io/badge/UselessProjects--25-25?link=https%3A%2F%2Fwww.tinkerhub.org%2Fevents%2FQ2Q1TQKX6Q%2FUseless%2520Projects)
+
 
 
 
